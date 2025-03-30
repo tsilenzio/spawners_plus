@@ -39,6 +39,9 @@ public class SpawnerProofTotem {
                 }
             }
         }
+        else{
+            disableSpawner = false;
+        }
 
         cir.setReturnValue(disableSpawner);
     }
