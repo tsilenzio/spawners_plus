@@ -12,6 +12,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.nathanthecraziest.spawnersplus.SpawnersPlus;
 import net.nathanthecraziest.spawnersplus.items.custom.SpawnerSilencerItem;
+import net.nathanthecraziest.spawnersplus.items.souls.MobSoulItem;
 import net.nathanthecraziest.spawnersplus.items.souls.ModSoulItem;
 
 public class ModItems {
@@ -29,6 +30,8 @@ public class ModItems {
     public static final Item HUSK_SOUL = registerItem("husk_soul", new ModSoulItem(new FabricItemSettings(), EntityType.HUSK));
     public static final Item DROWNED_SOUL = registerItem("drowned_soul", new ModSoulItem(new FabricItemSettings(), EntityType.DROWNED));
     public static final Item CREEPER_SOUL = registerItem("creeper_soul", new ModSoulItem(new FabricItemSettings(), EntityType.CREEPER));
+
+    public static final Item MOB_SOUL = registerItem("mob_soul", new MobSoulItem(new FabricItemSettings()));
 
     public static final Item SPAWNER_SILENCER = registerItem("spawner_silencer", new SpawnerSilencerItem(new FabricItemSettings().rarity(Rarity.UNCOMMON)));
     private static Item registerItem(String name, Item item){

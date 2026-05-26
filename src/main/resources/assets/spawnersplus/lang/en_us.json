@@ -14,6 +14,7 @@
   "item.spawnersplus.husk_soul": "Husk Soul",
   "item.spawnersplus.drowned_soul": "Drowned Soul",
   "item.spawnersplus.creeper_soul": "Creeper Soul",
+  "item.spawnersplus.mob_soul": "%s Soul",
 
   "item.spawnersplus.soul_item_tooltip": "Use on an Inactive Spawner",
   "enchantment.spawnersplus.desc": "Allows some mobs to drop souls on death",
