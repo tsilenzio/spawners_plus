@@ -15,19 +15,27 @@ import net.minecraft.loot.condition.RandomChanceLootCondition;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetCountLootFunction;
+import net.minecraft.loot.function.SetNbtLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.EntityEquipmentPredicate;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.item.EnchantmentPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Identifier;
 import net.nathanthecraziest.spawnersplus.SpawnersPlus;
+import net.nathanthecraziest.spawnersplus.config.MobSoulDropConfig;
 import net.nathanthecraziest.spawnersplus.config.SpawnersPlusConfig;
 import net.nathanthecraziest.spawnersplus.items.ModEnchantments;
+import net.nathanthecraziest.spawnersplus.items.ModItemGroup;
 import net.nathanthecraziest.spawnersplus.items.ModItems;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModLootTableModifiers {
     public static final Identifier ZOMBIE_ID = EntityType.ZOMBIE.getLootTableId();
@@ -41,6 +49,20 @@ public class ModLootTableModifiers {
     public static final Identifier HUSK_ID = EntityType.HUSK.getLootTableId();
     public static final Identifier DROWNED_ID = EntityType.DROWNED.getLootTableId();
     public static final Identifier CREEPER_ID = EntityType.CREEPER.getLootTableId();
+
+    private static volatile Map<Identifier, EntityType<?>> entityLootMap;
+
+    private static Map<Identifier, EntityType<?>> getEntityLootMap() {
+        Map<Identifier, EntityType<?>> m = entityLootMap;
+        if (m == null) {
+            m = new HashMap<>();
+            for (EntityType<?> type : Registries.ENTITY_TYPE) {
+                m.put(type.getLootTableId(), type);
+            }
+            entityLootMap = m;
+        }
+        return m;
+    }
 
 
     public static void modifyLootTables(){
@@ -57,6 +79,16 @@ public class ModLootTableModifiers {
             if(source.isBuiltin() && HUSK_ID.equals(id)) addMobSoulDrop(ModItems.HUSK_SOUL, getConfigDropRate("husk"), tableBuilder);
             if(source.isBuiltin() && DROWNED_ID.equals(id)) addMobSoulDrop(ModItems.DROWNED_SOUL, getConfigDropRate("drowned"), tableBuilder);
             if(source.isBuiltin() && CREEPER_ID.equals(id)) addMobSoulDrop(ModItems.CREEPER_SOUL, getConfigDropRate("creeper"), tableBuilder);
+
+            EntityType<?> type = getEntityLootMap().get(id);
+            // entities/player is a real loot table, never drop player souls
+            if (source.isBuiltin() && type != null && type != EntityType.PLAYER && !ModItemGroup.LEGACY_SOUL_TYPES.contains(type)) {
+                Identifier entityId = Registries.ENTITY_TYPE.getId(type);
+                if (entityId != null) {
+                    float rate = MobSoulDropConfig.rateFor(entityId);
+                    if (rate > 0f) addGenericMobSoulDrop(entityId, rate, tableBuilder);
+                }
+            }
         }));
     }
 
@@ -73,6 +105,25 @@ public class ModLootTableModifiers {
                     .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1f,1f)).build());
             tableBuilder.pool(poolBuilder.build());
         }
+    }
+
+    public static void addGenericMobSoulDrop(Identifier entityId, float dropChance, FabricLootTableBuilder tableBuilder){
+        NbtCompound root = new NbtCompound();
+        NbtCompound entityTag = new NbtCompound();
+        entityTag.putString("id", entityId.toString());
+        root.put("EntityTag", entityTag);
+
+        LootPool.Builder poolBuilder = LootPool.builder()
+                .rolls(ConstantLootNumberProvider.create(1))
+                .conditionally(RandomChanceLootCondition.builder(dropChance))
+                .conditionally(EntityPropertiesLootCondition.builder(LootContext.EntityTarget.KILLER,
+                        new EntityPredicate.Builder().equipment(EntityEquipmentPredicate.Builder.create()
+                                .mainhand(ItemPredicate.Builder.create()
+                                        .enchantment(new EnchantmentPredicate(ModEnchantments.SOUL_STEALING, NumberRange.IntRange.ANY)).build()).build()).build()))
+                .with(ItemEntry.builder(ModItems.MOB_SOUL))
+                .apply(SetNbtLootFunction.builder(root).build())
+                .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1f, 1f)).build());
+        tableBuilder.pool(poolBuilder.build());
     }
 
     public static float getConfigDropRate(String key){

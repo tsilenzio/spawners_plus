@@ -21,6 +21,8 @@ import java.util.function.Consumer;
 
 public class ModItemGroup {
 
+    // The twelve entities with dedicated ModSoulItem registrations. Skipped by the dynamic
+    // mob_soul populator and the generic loot drop path so the legacy drops remain authoritative.
     public static final Set<EntityType<?>> LEGACY_SOUL_TYPES = new HashSet<>(Set.of(
             EntityType.ZOMBIE, EntityType.SKELETON, EntityType.SPIDER, EntityType.CAVE_SPIDER,
             EntityType.BLAZE, EntityType.MAGMA_CUBE, EntityType.SILVERFISH, EntityType.STRAY,

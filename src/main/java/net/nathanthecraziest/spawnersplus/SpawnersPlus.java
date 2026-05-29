@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import net.fabricmc.api.ModInitializer;
 import net.nathanthecraziest.spawnersplus.blocks.ModBlocks;
 import net.nathanthecraziest.spawnersplus.config.Config;
+import net.nathanthecraziest.spawnersplus.config.MobSoulDropConfig;
 import net.nathanthecraziest.spawnersplus.config.SpawnersPlusConfig;
 import net.nathanthecraziest.spawnersplus.items.ModEnchantments;
 import net.nathanthecraziest.spawnersplus.items.ModItemGroup;
@@ -27,6 +28,7 @@ public class SpawnersPlus implements ModInitializer {
 		JsonObject json = Config.getJsonObject(Config.readFile(configFile));
 		SpawnersPlusConfig.generateConfigs(json == null || !json.has("reset_configs_on_startup") || json.get("reset_configs_on_startup").getAsBoolean());
 		SpawnersPlusConfig.loadConfig();
+		MobSoulDropConfig.load();
 
 		ModItems.registerModItems();
 		ModBlocks.registerModBlocks();

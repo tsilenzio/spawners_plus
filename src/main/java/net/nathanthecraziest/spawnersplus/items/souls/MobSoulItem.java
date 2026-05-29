@@ -6,6 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 
+// Single Item with stacks differentiated by EntityTag.id NBT. The dynamic populator in
+// SpawnersPlusClient adds one entries.add per entity type so creative search indexes each variant.
 public class MobSoulItem extends ModSoulItem {
 
     @Override
