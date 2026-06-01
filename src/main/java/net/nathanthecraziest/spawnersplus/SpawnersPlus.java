@@ -3,6 +3,7 @@ package net.nathanthecraziest.spawnersplus;
 import com.google.gson.JsonObject;
 import net.fabricmc.api.ModInitializer;
 import net.nathanthecraziest.spawnersplus.blocks.ModBlocks;
+import net.nathanthecraziest.spawnersplus.commands.SpawnersPlusCommand;
 import net.nathanthecraziest.spawnersplus.config.Config;
 import net.nathanthecraziest.spawnersplus.config.MobSoulDropConfig;
 import net.nathanthecraziest.spawnersplus.config.SpawnersPlusConfig;
@@ -35,5 +36,6 @@ public class SpawnersPlus implements ModInitializer {
 		ModItemGroup.registerModItemGroups();
 		ModEnchantments.registerModEnchantments();
 		ModLootTableModifiers.modifyLootTables();
+		SpawnersPlusCommand.register();
 	}
 }
