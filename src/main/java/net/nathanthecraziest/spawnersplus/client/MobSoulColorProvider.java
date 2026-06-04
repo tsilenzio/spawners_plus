@@ -18,6 +18,7 @@ public class MobSoulColorProvider implements ItemColorProvider {
         NbtCompound nbt = stack.getNbt();
         EntityType<?> type = soul.getEntityType(nbt);
         if (type == null) return FALLBACK_GRAY;
+        if (SoulTextureOverrides.hasOverride(EntityType.getId(type))) return -1; // hand-drawn art renders as-is
         SpawnEggItem egg = SpawnEggItem.forEntity(type);
         if (egg == null) return FALLBACK_GRAY;
         return 0xFF000000 | egg.getColor(0);

@@ -12,6 +12,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.world.World;
 import net.nathanthecraziest.spawnersplus.blocks.ModBlocks;
 import net.nathanthecraziest.spawnersplus.client.MobSoulColorProvider;
+import net.nathanthecraziest.spawnersplus.client.SoulTextureOverrides;
 import net.nathanthecraziest.spawnersplus.items.ModItemGroup;
 import net.nathanthecraziest.spawnersplus.items.ModItems;
 import net.nathanthecraziest.spawnersplus.items.souls.MobSoulItem;
@@ -22,6 +23,7 @@ public class SpawnersPlusClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.INACTIVE_SPAWNER, RenderLayer.getCutoutMipped());
 
         ColorProviderRegistry.ITEM.register(new MobSoulColorProvider(), ModItems.MOB_SOUL);
+        SoulTextureOverrides.register();
 
         ModItemGroup.clientDynamicPopulator = entries -> {
             MobSoulItem mobSoul = (MobSoulItem) ModItems.MOB_SOUL;
